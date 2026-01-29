@@ -293,8 +293,15 @@ class APIIngress(CoreSysAttributes):
             try:
                 response.headers["X-Accel-Buffering"] = "no"
                 await response.prepare(request)
-                async for data, _ in result.content.iter_chunks():
-                    await response.write(data)
+
+                # For Server-Sent Events (SSE) we want to forward bytes as soon as
+                # they arrive to avoid buffering/latency.
+                if content_type == "text/event-stream":
+                    async for data in result.content.iter_any():
+                        await response.write(data)
+                else:
+                    async for data, _ in result.content.iter_chunks():
+                        await response.write(data)
 
             except (
                 aiohttp.ClientError,
