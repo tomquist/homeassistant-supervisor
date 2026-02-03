@@ -26,6 +26,8 @@ FORWARD_HEADERS = (
     "Accept",
     "Last-Event-ID",
     "Mcp-Session-Id",
+    "MCP-Protocol-Version",
+    "Origin",
 )
 HEADER_HA_ACCESS = "X-Ha-Access"
 
